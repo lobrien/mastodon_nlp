@@ -38,18 +38,18 @@ def extract_contents(tl : Iterable[AttribAccessDict]) -> list[str]:
 def sentiment_nlp(content : str) -> str:
     openai.api_key = os.environ['OPENAI_KEY']
     # OpenAI prompt for sentiment analysis
-    prompt = f"""Label the sentiment of this sentence:\n\n{content}\n\n1. Positive\n2. Neutral\n3. Negative\n\nLabel:"""
+    prompt = f"""Label the sentiment of this sentence:\n\n{content}\n\nPositive\nNeutral\nNegative\n\nLabel:"""
     response = openai.Completion.create(
         engine = 'text-davinci-002',
         prompt = prompt,
         temperature = 0,
-        max_tokens = 60,
+        max_tokens = 1,
         top_p = 1.0,
         frequency_penalty = 0.0,
         presence_penalty = 0.0,
         best_of = 1
     )
-    return response['choices'][0]['text']
+    return response['choices'][0]['text'].strip()
 
 def main():
     credential_file = 'sentiment_nlp_clientcred.secret'
@@ -65,7 +65,7 @@ def main():
         sentiments.append(sentiment)
 
     for (content,sentiment) in zip(contents,sentiments):
-        print(f"{content} -> {sentiment}")
+        print(f"{sentiment} : {content}")
 
 
 if __name__ == '__main__':
